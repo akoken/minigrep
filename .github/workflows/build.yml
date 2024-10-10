@@ -5,7 +5,7 @@ on:
       - '.github/**'
   push:
     branches:
-      - master
+      - main
     paths-ignore:
       - '.github/**'
   schedule:
