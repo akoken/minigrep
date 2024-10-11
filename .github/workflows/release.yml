@@ -8,10 +8,13 @@ on:
     - 'v[0-9]+.[0-9]+.[0-9]+'
     ## - release
 
+permissions:
+  contents: write  
+
 env:
   BIN_NAME: minigrep
   PROJECT_NAME: minigrep
-  REPO_NAME: spectralops/rust-ci-release-template
+  REPO_NAME: akoken/minigrep
   BREW_TAP: jondot/homebrew-tap
 
 jobs:
