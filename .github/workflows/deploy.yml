@@ -1,8 +1,8 @@
 name: Release - Distribute binaries
 on:
   # If we want to make release using github interface.
-  # release:
-  #   types: [published]
+  release:
+    types: [created]
   # If we want to make release by pushing new tag.
   push:
     tags:
