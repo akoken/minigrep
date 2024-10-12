@@ -13,7 +13,7 @@ To install Minigrep, you can download binaries or follow these steps:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/minigrep.git
+   git clone https://github.com/akoken/minigrep.git
    cd minigrep
    ```
 
