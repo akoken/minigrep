@@ -1,6 +1,6 @@
 # Minigrep
 
-Minigrep is a simple command-line utility that performs text searches in files or standard input, similar to the traditional grep tool. It's designed to be straightforward and easy to use for basic text searching needs.
+Minigrep is a very basic command-line utility that performs text searches in files, similar to the traditional grep tool. It's designed to be straightforward and easy to use for basic text searching needs.
 
 ## Features
 
