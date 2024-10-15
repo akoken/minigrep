@@ -1,5 +1,6 @@
 use clap::{Arg, ArgAction, Command};
 
+#[derive(Debug)]
 pub struct Config {
     pub pattern: String,
     pub filename: String,
@@ -28,7 +29,7 @@ pub fn parse_args() -> Config {
                 .short('i')
                 .long("ignore-case")
                 .help("Ignore case during search")
-                .action(ArgAction::SetFalse),
+                .action(ArgAction::SetTrue),
         )
         .get_matches();
 
