@@ -33,8 +33,7 @@ To install Minigrep, you can download binaries or follow these steps:
 
 2. Case-insensitive search for "warning" in a log file:
    ```bash
-   export IGNORE_CASE=1
-   minigrep warning app.log
+   minigrep -i warning app.log
    ```
 
 ## Contributing
