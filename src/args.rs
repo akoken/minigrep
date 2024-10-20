@@ -5,6 +5,7 @@ pub struct Config {
     pub pattern: String,
     pub filename: String,
     pub ignore_case: bool,
+    pub line_number: bool,
 }
 
 pub fn parse_args() -> Config {
@@ -31,16 +32,24 @@ pub fn parse_args() -> Config {
                 .help("Ignore case during search")
                 .action(ArgAction::SetTrue),
         )
+        .arg(
+            Arg::new("line_number")
+                .short('l')
+                .long("line-number")
+                .help("Show line numbers")
+                .action(ArgAction::SetTrue),
+        )
         .get_matches();
 
-    // Get the values from the matches
     let pattern = matches.get_one::<String>("pattern").unwrap().to_string();
     let filename = matches.get_one::<String>("file").unwrap().to_string();
     let ignore_case = matches.get_flag("ignore_case");
+    let line_number = matches.get_flag("line_number");
 
     Config {
         pattern,
         filename,
         ignore_case,
+        line_number,
     }
 }

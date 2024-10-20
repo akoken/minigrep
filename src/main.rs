@@ -18,37 +18,51 @@ fn main() {
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.filename)?;
-    let results: Vec<&str> = if config.ignore_case {
+    let results: Vec<SearchResult> = if config.ignore_case {
         search_case_insensitive(&config.pattern, &contents)
     } else {
         search(&config.pattern, &contents)
     };
 
     for line in results {
-        println!("{}", line);
+        if config.line_number {
+            println!("{}: {}", line.line_number, line.line_text);
+        } else {
+            println!("{}", line.line_text);
+        }
     }
 
     Ok(())
 }
 
-pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+#[derive(Debug)]
+pub struct SearchResult {
+    line_number: u32,
+    line_text: String,
+}
+
+pub fn search(query: &str, contents: &str) -> Vec<SearchResult> {
     contents
         .lines()
-        .filter(|line| line.contains(query))
+        .enumerate()
+        .filter(|(_, line)| line.contains(query))
+        .map(|(index, line)| SearchResult {
+            line_number: (index + 1) as u32,
+            line_text: line.to_string(),
+        })
         .collect()
 }
 
-pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let query = query.to_lowercase();
-    let mut results = Vec::new();
-
-    for line in contents.lines() {
-        if line.to_lowercase().contains(&query) {
-            results.push(line);
-        }
-    }
-
-    results
+pub fn search_case_insensitive(query: &str, contents: &str) -> Vec<SearchResult> {
+    contents
+        .lines()
+        .enumerate()
+        .filter(|(_, line)| line.to_lowercase().contains(&query.to_lowercase()))
+        .map(|(index, line)| SearchResult {
+            line_number: (index + 1) as u32,
+            line_text: line.to_string(),
+        })
+        .collect()
 }
 
 #[cfg(test)]
