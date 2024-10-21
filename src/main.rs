@@ -1,6 +1,7 @@
 mod args;
 
 use args::Config;
+use colored::*;
 use std::cmp::PartialEq;
 use std::error::Error;
 use std::fs;
@@ -17,15 +18,15 @@ fn main() {
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.filename)?;
-    let results: Vec<SearchResult> = if config.ignore_case {
-        search_case_insensitive(&config.pattern, &contents)
-    } else {
-        search(&config.pattern, &contents)
-    };
+    let results = search(&config.pattern, &contents, config.ignore_case);
 
     for line in results {
         if config.line_number {
-            println!("{}: {}", line.line_number, line.line_text);
+            println!(
+                "{}: {}",
+                line.line_number.to_string().blue(),
+                line.line_text
+            );
         } else {
             println!("{}", line.line_text);
         }
@@ -46,30 +47,40 @@ impl PartialEq for SearchResult {
     }
 }
 
-pub fn search(query: &str, contents: &str) -> Vec<SearchResult> {
+pub fn search(query: &str, contents: &str, ignore_case: bool) -> Vec<SearchResult> {
     contents
         .lines()
         .enumerate()
-        .filter(|(_, line)| line.contains(query))
-        .map(|(index, line)| SearchResult {
-            line_number: (index + 1) as u32,
-            line_text: line.to_string(),
+        .filter_map(|(index, line)| {
+            let matches = if ignore_case {
+                line.to_lowercase().contains(&query.to_lowercase())
+            } else {
+                line.contains(query)
+            };
+
+            if matches {
+                let colored_line = if ignore_case {
+                    let mut colored_line = line.to_string();
+                    for (start, part) in line.to_lowercase().match_indices(&query.to_lowercase()) {
+                        let end = start + part.len();
+                        let colored_part = &line[start..end].red().to_string();
+                        colored_line.replace_range(start..end, colored_part);
+                    }
+                    colored_line
+                } else {
+                    line.replace(query, &query.red().to_string())
+                };
+
+                Some(SearchResult {
+                    line_number: (index + 1) as u32,
+                    line_text: colored_line,
+                })
+            } else {
+                None
+            }
         })
         .collect()
 }
-
-pub fn search_case_insensitive(query: &str, contents: &str) -> Vec<SearchResult> {
-    contents
-        .lines()
-        .enumerate()
-        .filter(|(_, line)| line.to_lowercase().contains(&query.to_lowercase()))
-        .map(|(index, line)| SearchResult {
-            line_number: (index + 1) as u32,
-            line_text: line.to_string(),
-        })
-        .collect()
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -85,9 +96,9 @@ Duct tape.";
 
         let expected = vec![SearchResult {
             line_number: 2,
-            line_text: "safe, fast, productive.".to_string(),
+            line_text: "safe, fast, pro".to_string() + &"duct".red().to_string() + "ive.",
         }];
-        assert_eq!(expected, search(query, contents));
+        assert_eq!(expected, search(query, contents, false));
     }
 
     #[test]
@@ -102,13 +113,13 @@ Trust me.";
         let expected = vec![
             SearchResult {
                 line_number: 1,
-                line_text: "Rust:".to_string(),
+                line_text: "Rust".red().to_string() + ":",
             },
             SearchResult {
                 line_number: 4,
-                line_text: "Trust me.".to_string(),
+                line_text: "T".to_string() + &"rust".red().to_string() + " me.",
             },
         ];
-        assert_eq!(expected, search_case_insensitive(query, contents));
+        assert_eq!(expected, search(query, contents, true));
     }
 }
