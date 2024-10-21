@@ -1,6 +1,7 @@
 mod args;
 
 use args::Config;
+use std::cmp::PartialEq;
 use std::error::Error;
 use std::fs;
 use std::process;
@@ -41,6 +42,12 @@ pub struct SearchResult {
     line_text: String,
 }
 
+impl PartialEq for SearchResult {
+    fn eq(&self, other: &Self) -> bool {
+        self.line_number == other.line_number && self.line_text == other.line_text
+    }
+}
+
 pub fn search(query: &str, contents: &str) -> Vec<SearchResult> {
     contents
         .lines()
@@ -78,7 +85,11 @@ safe, fast, productive.
 Pick three.
 Duct tape.";
 
-        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+        let expected = vec![SearchResult {
+            line_number: 2,
+            line_text: "safe, fast, productive.".to_string(),
+        }];
+        assert_eq!(expected, search(query, contents));
     }
 
     #[test]
@@ -90,9 +101,16 @@ safe, fast, productive.
 Pick three.
 Trust me.";
 
-        assert_eq!(
-            vec!["Rust:", "Trust me."],
-            search_case_insensitive(query, contents)
-        );
+        let expected = vec![
+            SearchResult {
+                line_number: 1,
+                line_text: "Rust:".to_string(),
+            },
+            SearchResult {
+                line_number: 4,
+                line_text: "Trust me.".to_string(),
+            },
+        ];
+        assert_eq!(expected, search_case_insensitive(query, contents));
     }
 }
