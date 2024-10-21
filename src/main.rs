@@ -22,7 +22,11 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
     for line in results {
         if config.line_number {
-            println!("{}: {}", line.line_number, line.line_text);
+            println!(
+                "{}: {}",
+                line.line_number.to_string().blue(),
+                line.line_text
+            );
         } else {
             println!("{}", line.line_text);
         }
