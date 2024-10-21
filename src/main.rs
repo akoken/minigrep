@@ -8,8 +8,6 @@ use std::process;
 
 fn main() {
     let config = args::parse_args();
-    println!("Searching for {}", config.pattern);
-    println!("In file {}", config.filename);
 
     if let Err(e) = run(config) {
         eprintln!("Application error: {}", e);
