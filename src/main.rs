@@ -1,6 +1,7 @@
 mod args;
 
 use args::Config;
+use colored::*;
 use std::cmp::PartialEq;
 use std::error::Error;
 use std::fs;
@@ -53,7 +54,7 @@ pub fn search(query: &str, contents: &str) -> Vec<SearchResult> {
         .filter(|(_, line)| line.contains(query))
         .map(|(index, line)| SearchResult {
             line_number: (index + 1) as u32,
-            line_text: line.to_string(),
+            line_text: line.replace(query, &query.green().to_string()),
         })
         .collect()
 }
@@ -65,7 +66,7 @@ pub fn search_case_insensitive(query: &str, contents: &str) -> Vec<SearchResult>
         .filter(|(_, line)| line.to_lowercase().contains(&query.to_lowercase()))
         .map(|(index, line)| SearchResult {
             line_number: (index + 1) as u32,
-            line_text: line.to_string(),
+            line_text: line.replace(query, &query.green().to_string()),
         })
         .collect()
 }
@@ -85,7 +86,7 @@ Duct tape.";
 
         let expected = vec![SearchResult {
             line_number: 2,
-            line_text: "safe, fast, productive.".to_string(),
+            line_text: "safe, fast, pro".to_string() + &"duct".green().to_string() + "ive.",
         }];
         assert_eq!(expected, search(query, contents));
     }
