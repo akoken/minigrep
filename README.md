@@ -24,7 +24,7 @@ To install Minigrep, you can download binaries or follow these steps:
 
 3. The binary will be available in `target/release/minigrep`
 
-## Examples
+## Usage
 
 1. Search for "error" in a log file:
    ```bash
