@@ -26,19 +26,21 @@ To install Minigrep, you can download binaries or follow these steps:
 
 ## Usage
 
-1. Search for "error" in a log file:
+1. Search for "to" in a file:
    ```bash
-   minigrep error app.log
+   minigrep to file.txt
    ```
-
-2. Case-insensitive search for "warning" in a log file:
+   ![image](./assets/1.png)
+2. Case-insensitive search for "to" in a file:
    ```bash
-   minigrep -i warning app.log
+   minigrep -i to file.txt
    ```
+   ![image](./assets/2.png)
 3. Show line numbers:
    ```bash
-   minigrep -l warning app.log
+   minigrep -l to file.txt
    ```
+   ![image](./assets/3.png)
 
 ## Contributing
 
