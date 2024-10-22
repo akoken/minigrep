@@ -35,6 +35,10 @@ To install Minigrep, you can download binaries or follow these steps:
    ```bash
    minigrep -i warning app.log
    ```
+3. Show line numbers:
+   ```bash
+   minigrep -l warning app.log
+   ```
 
 ## Contributing
 
