@@ -26,22 +26,22 @@ To install Minigrep, you can download binaries or follow these steps:
 
 ## Usage
 
-1. Search for "to" in a file:
+1. Search for "rust" in a file:
 
    ```bash
-   minigrep to file.txt
+   minigrep rust file.txt
    ```
    ![image](./assets/1.png)
-2. Case-insensitive search for "to" in a file:
+2. Case-insensitive search for "RUST" in a file:
 
    ```bash
-   minigrep -i to file.txt
+   minigrep -i RUST file.txt
    ```
    ![image](./assets/2.png)
 3. Show line numbers:
 
    ```bash
-   minigrep -l to file.txt
+   minigrep -l memory file.txt
    ```
    ![image](./assets/3.png)
 
