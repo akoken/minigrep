@@ -96,41 +96,68 @@ pub fn search(query: &str, contents: &str, ignore_case: bool) -> Vec<SearchResul
 mod tests {
     use super::*;
 
-    #[test]
-    fn case_sensitive() {
-        let query = "duct";
-        let contents = "\
-Rust:
-safe, fast, productive.
-Pick three.
-Duct tape.";
-
-        let expected = vec![SearchResult {
-            line_number: 2,
-            line_text: "safe, fast, pro".to_string() + &"duct".red().to_string() + "ive.",
-        }];
-        assert_eq!(expected, search(query, contents, false));
+    fn strip_color_codes(s: &str) -> String {
+        // Use regex or replace ANSI codes directly if needed
+        s.replace("\x1b[31m", "").replace("\x1b[0m", "")
     }
 
     #[test]
-    fn case_insensitive() {
-        let query = "rUsT";
-        let contents = "\
-Rust:
-safe, fast, productive.
-Pick three.
-Trust me.";
+    fn test_case_sensitive_colorization() {
+        let query = "Warning";
+        let contents = "Warning: This is a test.\nAnother line with Warning.\nFinal line.";
+        let ignore_case = false;
 
-        let expected = vec![
-            SearchResult {
-                line_number: 1,
-                line_text: "Rust".red().to_string() + ":",
-            },
-            SearchResult {
-                line_number: 4,
-                line_text: "T".to_string() + &"rust".red().to_string() + " me.",
-            },
-        ];
-        assert_eq!(expected, search(query, contents, true));
+        let results = search(query, contents, ignore_case);
+
+        assert_eq!(results.len(), 2);
+
+        let expected_line1 = format!("{}: This is a test.", "Warning".red());
+        let expected_line2 = format!("Another line with {}.", "Warning".red());
+
+        assert_eq!(results[0].line_text, expected_line1);
+        assert_eq!(results[1].line_text, expected_line2);
+    }
+
+    #[test]
+    fn test_case_insensitive_colorization() {
+        let query = "warning";
+        let contents = "Warning: This is a test.\nAnother line with warning.\nFinal line.";
+        let ignore_case = true;
+
+        let results = search(query, contents, ignore_case);
+
+        assert_eq!(results.len(), 2);
+
+        let expected_line1 = format!("{}: This is a test.", "Warning".red());
+        let expected_line2 = format!("Another line with {}.", "warning".red());
+
+        assert_eq!(results[0].line_text, expected_line1);
+        assert_eq!(results[1].line_text, expected_line2);
+    }
+
+    #[test]
+    fn test_no_colorization_in_non_matching_line() {
+        let query = "Error";
+        let contents = "Warning: This is a test.\nAnother line with Warning.\nFinal line.";
+        let ignore_case = true;
+
+        let results = search(query, contents, ignore_case);
+
+        assert_eq!(results.len(), 0);
+    }
+
+    #[test]
+    fn test_colorization_strip() {
+        let query = "Warning";
+        let contents = "Warning: Check the warning levels.\nIgnore warnings on final line.";
+        let ignore_case = false;
+
+        let results = search(query, contents, ignore_case);
+
+        for result in results {
+            let stripped_text = strip_color_codes(&result.line_text);
+            assert!(stripped_text.contains(query));
+            assert!(!stripped_text.contains("\x1b["));
+        }
     }
 }
