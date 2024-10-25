@@ -48,28 +48,38 @@ impl PartialEq for SearchResult {
 }
 
 pub fn search(query: &str, contents: &str, ignore_case: bool) -> Vec<SearchResult> {
+    let query_to_search = if ignore_case {
+        query.to_lowercase()
+    } else {
+        query.to_string()
+    };
+
     contents
         .lines()
         .enumerate()
         .filter_map(|(index, line)| {
-            let matches = if ignore_case {
-                line.to_lowercase().contains(&query.to_lowercase())
+            let line_to_search = if ignore_case {
+                line.to_lowercase()
             } else {
-                line.contains(query)
+                line.to_string()
             };
 
-            if matches {
-                let colored_line = if ignore_case {
-                    let mut colored_line = line.to_string();
-                    for (start, part) in line.to_lowercase().match_indices(&query.to_lowercase()) {
-                        let end = start + part.len();
-                        let colored_part = &line[start..end].red().to_string();
-                        colored_line.replace_range(start..end, colored_part);
-                    }
-                    colored_line
-                } else {
-                    line.replace(query, &query.red().to_string())
-                };
+            if line_to_search.contains(&query_to_search) {
+                let mut colored_line = String::new();
+                let mut last_match_end = 0;
+
+                let matches = line_to_search.match_indices(&query_to_search);
+
+                for (start, _) in matches {
+                    colored_line.push_str(&line[last_match_end..start]);
+
+                    let original_text = &line[start..start + query.len()];
+                    colored_line.push_str(&original_text.red().to_string());
+
+                    last_match_end = start + query.len();
+                }
+
+                colored_line.push_str(&line[last_match_end..]);
 
                 Some(SearchResult {
                     line_number: (index + 1) as u32,
@@ -81,6 +91,7 @@ pub fn search(query: &str, contents: &str, ignore_case: bool) -> Vec<SearchResul
         })
         .collect()
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;
