@@ -97,7 +97,6 @@ mod tests {
     use super::*;
 
     fn strip_color_codes(s: &str) -> String {
-        // Use regex or replace ANSI codes directly if needed
         s.replace("\x1b[31m", "").replace("\x1b[0m", "")
     }
 

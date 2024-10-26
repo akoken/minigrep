@@ -12,12 +12,14 @@ Minigrep is a very basic command-line utility that performs text searches in fil
 To install Minigrep, you can download binaries or follow these steps:
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/akoken/minigrep.git
    cd minigrep
    ```
 
 2. Build the project:
+
    ```bash
    cargo build --release
    ```
