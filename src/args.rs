@@ -41,8 +41,8 @@ pub fn parse_args() -> Config {
         )
         .get_matches();
 
-    let pattern = matches.get_one::<String>("pattern").unwrap().to_string();
-    let filename = matches.get_one::<String>("file").unwrap().to_string();
+    let pattern = matches.get_one::<String>("pattern").expect("pattern argument is required").to_string();
+    let filename = matches.get_one::<String>("file").expect("file argument is required").to_string();
     let ignore_case = matches.get_flag("ignore_case");
     let line_number = matches.get_flag("line_number");
 

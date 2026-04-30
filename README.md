@@ -4,8 +4,8 @@ Minigrep is a very basic command-line utility that performs text searches in fil
 
 ## Features
 
-- Search for standard input
 - Case-sensitive and case-insensitive search options
+- Line number output for matching lines
 
 ## Installation
 

@@ -2,7 +2,6 @@ mod args;
 
 use args::Config;
 use colored::*;
-use std::cmp::PartialEq;
 use std::error::Error;
 use std::fs;
 use std::process;
@@ -35,16 +34,10 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct SearchResult {
     line_number: u32,
     line_text: String,
-}
-
-impl PartialEq for SearchResult {
-    fn eq(&self, other: &Self) -> bool {
-        self.line_number == other.line_number && self.line_text == other.line_text
-    }
 }
 
 pub fn search(query: &str, contents: &str, ignore_case: bool) -> Vec<SearchResult> {
