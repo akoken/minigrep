@@ -42,9 +42,9 @@ To install Minigrep, you can download binaries or follow these steps:
    ![image](./assets/2.png)
 3. Show line numbers:
 
-   ```bash
-   minigrep -l memory file.txt
-   ```
+    ```bash
+    minigrep -n memory file.txt
+    ```
    ![image](./assets/3.png)
 
 ## Contributing
